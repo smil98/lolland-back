@@ -11,6 +11,12 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
 
+    @Select("""
+                SELECT *
+                FROM category
+            """)
+    List<Category> getAllCategories();
+
     @Select("SELECT c.category_id, c.category_name, sc.subcategory_id, sc.category_id as subcategory_category_id, sc.subcategory_name " +
             "FROM category c " +
             "LEFT JOIN subcategory sc ON c.category_id = sc.category_id " +
@@ -210,11 +216,6 @@ public interface ProductMapper {
     List<SubCategoryDto> getSubcategoryById(Long categoryId);
 
     // 메인페이지에서 카테고리 가져올때 이거 사용하면됨.
-    @Select("""
-                SELECT *
-                FROM category
-            """)
-    List<Category> getAllCategories();
 
     @Select("""
                 SELECT DISTINCT c.company_id, c.company_name

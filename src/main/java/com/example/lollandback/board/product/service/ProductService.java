@@ -48,7 +48,16 @@ public class ProductService {
 
     // --------------------------- 상품 저장 시 대분류/소분류 보여주기 로직 ---------------------------
     public List<CategoryDto> getAllCategories() {
-        return productMapper.getAllCategoriesWithSub();
+        List<Category> categories = productMapper.getAllCategories();
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+
+        for(Category category : categories) {
+            List<SubCategoryDto> subcategories = productMapper.getSubcategories(category.getCategory_id());
+            CategoryDto categoryDto = new CategoryDto(category, subcategories);
+            categoryDtoList.add(categoryDto);
+        }
+
+        return categoryDtoList;
     }
 
     // --------------------------- 상품 저장 로직 ---------------------------
