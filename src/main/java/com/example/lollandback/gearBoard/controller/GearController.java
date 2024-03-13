@@ -80,10 +80,6 @@ public class GearController {
                          @RequestParam(value = "removeFileIds[]",required = false) List<Integer> removeFilesIds,
                          @RequestParam(value = "uploadFiles[]",required = false) MultipartFile[] uploadFiles,
                          @SessionAttribute(value = "login" ,required = false)Member login) throws IOException {
-        System.out.println("removeFilesIds = " + removeFilesIds);
-        System.out.println("uploadFiles = " + uploadFiles);
-        System.out.println("login = " + login);
-        System.out.println("gearBoard = " + gearBoard);
         service.saveup(gearBoard,removeFilesIds,uploadFiles);
     }
 }

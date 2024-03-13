@@ -1,6 +1,7 @@
 package com.example.lollandback.gearBoard.mapper;
 
 import com.example.lollandback.gearBoard.domain.GearComment;
+import com.example.lollandback.gearBoard.dto.GearCommentDto;
 import com.example.lollandback.member.domain.Member;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -19,11 +20,11 @@ public interface GearCommentMapper {
      int add(GearComment gearComment);
 
     @Select("""
-                SELECT member_name, comment, inserted, boardid, gearcomment.id id, m.member_login_id AS memberId
-                FROM gearcomment JOIN lolland.member m ON m.id = gearcomment.memberid 
+                SELECT gearcomment.id id, comment, inserted, boardid, member_name, m.member_login_id
+                FROM gearcomment JOIN member m ON m.id = gearcomment.memberid 
                 WHERE boardid = #{gear_id};
         """)
-    List<GearComment> list(Integer gear_id);
+    List<GearCommentDto> list(Integer gear_id);
 
     @Delete("""
                 delete from gearcomment where id=#{id};

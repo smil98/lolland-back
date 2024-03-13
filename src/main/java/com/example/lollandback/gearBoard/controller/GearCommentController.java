@@ -1,6 +1,7 @@
 package com.example.lollandback.gearBoard.controller;
 
 import com.example.lollandback.gearBoard.domain.GearComment;
+import com.example.lollandback.gearBoard.dto.GearCommentDto;
 import com.example.lollandback.gearBoard.service.GearCommentService;
 import com.example.lollandback.member.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class GearCommentController {
     }
 
     @GetMapping("list")
-    public List<GearComment> list(@RequestParam("gear_id") Integer gear_id){
+    public List<GearCommentDto> list(@RequestParam("gear_id") Integer gear_id){
         return commentservice.list(gear_id);
     }
 
