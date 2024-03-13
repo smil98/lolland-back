@@ -19,8 +19,9 @@ public interface GearCommentMapper {
      int add(GearComment gearComment);
 
     @Select("""
-                select member_name ,comment,inserted, gearcomment.id id
-                 from gearcomment join lolland.member m on m.id = gearcomment.memberid where boardid=#{gear_id};
+                SELECT member_name, comment, inserted, boardid, gearcomment.id id, m.member_login_id AS memberId
+                FROM gearcomment JOIN lolland.member m ON m.id = gearcomment.memberid 
+                WHERE boardid = #{gear_id};
         """)
     List<GearComment> list(Integer gear_id);
 

@@ -19,28 +19,22 @@ public class GearCommentController {
 
     @PostMapping("add")
     public ResponseEntity add(@RequestBody GearComment gearComment,
-                              @SessionAttribute(value = "login",required = false)Member login){
-
-        System.out.println("gearComment = " + gearComment);
-
-if (commentservice.validate(gearComment)){
-        if(commentservice.add(gearComment,login)){
-    return  ResponseEntity.ok().build();
-        }else {
-            return ResponseEntity.internalServerError().build();
+                              @SessionAttribute(value = "login",required = false) Member login) {
+        if (commentservice.validate(gearComment)) {
+            if (commentservice.add(gearComment,login)) {
+                return  ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.internalServerError().build();
+            }
+        } else {
+            return ResponseEntity.badRequest().build();
         }
-    }else {
-return ResponseEntity.badRequest().build();}
     }
-
-
-
 
     @GetMapping("list")
     public List<GearComment> list(@RequestParam("gear_id") Integer gear_id){
-        return  commentservice.list(gear_id);
+        return commentservice.list(gear_id);
     }
-
 
     @DeleteMapping("remove/{id}")
     public  ResponseEntity  remove(@PathVariable Integer id,@SessionAttribute(value = "login",required = false)Member login) {
