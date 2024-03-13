@@ -15,24 +15,34 @@ public interface GearCommentMapper {
 
 
     @Insert("""
-            insert into gearcomment (boardid, comment, memberId) values (#{boardid},#{comment},#{memberId});
+            INSERT INTO gearcomment (boardid, comment, memberId) 
+            VALUES (#{boardid},#{comment},#{memberId});
         """)
      int add(GearComment gearComment);
 
     @Select("""
-                SELECT gearcomment.id id, comment, inserted, boardid, member_name, m.member_login_id
-                FROM gearcomment JOIN member m ON m.id = gearcomment.memberid 
-                WHERE boardid = #{gear_id};
+            SELECT gearcomment.id id, comment, inserted, boardid, member_name, m.member_login_id
+            FROM gearcomment JOIN member m ON m.id = gearcomment.memberid 
+            WHERE boardid = #{gear_id};
         """)
     List<GearCommentDto> list(Integer gear_id);
 
     @Delete("""
-                delete from gearcomment where id=#{id};
+            DELETE FROM gearcomment
+            WHERE id=#{id};
         """)
     int remove(Integer id);
 
+    @Delete("""
+        DELETE FROM gearcomment
+        WHERE boardid = #{gear_id}
+    """)
+    int deleteAllCommentByBoardId(Integer gear_id);
+
     @Select("""
-                select m.id id from gearcomment join lolland.member m on m.id = gearcomment.memberid where boardid=#{gear_id};
+                SELECT m.id id 
+                FROM gearcomment gc JOIN member m ON m.id = gc.memberid
+                WHERE boardid = #{gear_id};
         """)
     GearComment selectById(Integer id);
 

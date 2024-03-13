@@ -6,6 +6,7 @@ import com.example.lollandback.gearBoard.domain.GearFile;
 import com.example.lollandback.gearBoard.dto.GearBoardDto;
 import com.example.lollandback.gearBoard.mapper.GearCommentMapper;
 import com.example.lollandback.gearBoard.mapper.GearFileMapper;
+import com.example.lollandback.gearBoard.mapper.GearLikeMapper;
 import com.example.lollandback.gearBoard.mapper.GearMapper;
 import com.example.lollandback.member.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -30,17 +31,16 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Service
 public class GearService {
-    private final GearMapper mapper;
-
     private final S3Client s3;
-
     @Value("${aws.s3.bucket.name}")
     private String bucket;
-
     @Value("${image.file.prefix}")
     private String urlPrefix;
 
+    private final GearMapper mapper;
     private final GearFileMapper gearFileMapper;
+    private final GearCommentMapper gearCommentMapper;
+    private final GearLikeMapper gearLikeMapper;
 
     public List<GearBoard> list(String category) {
         return mapper.list(category);
@@ -58,10 +58,13 @@ public class GearService {
         return board;
     }
 
-    public boolean  remove(Integer gear_id) {
-        // 맴버가 작성한 댓글 삭제
-        deleteFile(gear_id);
+    public boolean remove(Integer gear_id) {
+        // 해당 포스트에 달린 댓글 전부 삭제
+        gearCommentMapper.deleteAllCommentByBoardId(gear_id);
+        // 해당 포스틔의 추천 전부 삭제
+        gearLikeMapper.deleteAllLikeByBoardId(gear_id);
         // 첨부 파일 지우기
+        deleteFile(gear_id);
       return mapper.remove(gear_id)==1;
     }
 
@@ -88,7 +91,6 @@ public class GearService {
 
         //파일 지우기
         //s3 에서 지우기
-
         if (removeFilesIds != null) {
             for (Integer id: removeFilesIds){
                 //s3에서 지우기

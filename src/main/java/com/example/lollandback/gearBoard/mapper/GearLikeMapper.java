@@ -8,26 +8,34 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface GearLikeMapper {
-
-
-    @Delete("""
-                delete from lolland.gearlike where gearboardId=#{gearboardId} and memberId=#{memberId};
-        """)
-    int delete(GearLike gearLike);
-
-    @Insert("""
-                insert into lolland.gearlike (gearboardId, memberId) values (#{gearboardId},#{memberId});
-        """)
-    int insert(GearLike gearLike);
-
     @Select("""
-                select count(id ) from lolland.gearlike where gearboardId=#{gearboardId};
+            SELECT count(id)
+            FROM gearlike
+            WHERE gearboardId = #{gearboardId};
         """)
     int countByBoardId(Integer gear_id);
 
     @Select("""
-                select * from lolland.gearlike where gearboardId=#{gear_id} and memberId=#{id};
+            SELECT * FROM gearlike
+            WHERE gearboardId = #{gear_id} AND memberId = #{id};
         """)
-
     GearLike selectbyId(Integer gear_id, Long id);
+
+    @Insert("""
+            INSERT INTO gearlike (gearboardId, memberId)
+            VALUES (#{gearboardId},#{memberId});
+        """)
+    int insert(GearLike gearLike);
+
+    @Delete("""
+            DELETE FROM gearlike
+            WHERE gearboardId = #{gearboardId} AND memberId = #{memberId};
+        """)
+    int delete(GearLike gearLike);
+
+    @Delete("""
+        DELETE FROM gearlike
+        WHERE gearboardId = #{gearboardId}
+    """)
+    int deleteAllLikeByBoardId(Integer gear_id);
 }
