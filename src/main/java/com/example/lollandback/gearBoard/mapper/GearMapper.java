@@ -1,6 +1,7 @@
 package com.example.lollandback.gearBoard.mapper;
 
 import com.example.lollandback.gearBoard.domain.GearBoard;
+import com.example.lollandback.gearBoard.dto.GearBoardDto;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -59,7 +60,6 @@ public interface GearMapper {
 
 
     @Select("""
-             
              SELECT
                  b.gear_id,
                  b.gear_title,
@@ -73,6 +73,7 @@ public interface GearMapper {
                  m.member_introduce,
                  m.member_name,
                  m.id AS member_id,
+                 m.member_email,
                  mi.file_name,
                  mi.file_url
              FROM
@@ -87,11 +88,11 @@ public interface GearMapper {
                  member m ON b.member_id = m.member_login_id
                      LEFT JOIN
                  memberimage mi ON m.id = mi.member_id
-             where b.gear_id=#{gear_id}
+             WHERE b.gear_id=#{gear_id}
              GROUP BY
                  b.gear_id;
         """)
-    GearBoard getId(Integer gear_id);
+    GearBoardDto getId(Integer gear_id);
 
     @Delete("""
                 delete from gearboard where gear_id=#{gear_id};

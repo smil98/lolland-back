@@ -1,6 +1,7 @@
 package com.example.lollandback.gearBoard.controller;
 
 import com.example.lollandback.gearBoard.domain.GearBoard;
+import com.example.lollandback.gearBoard.dto.GearBoardDto;
 import com.example.lollandback.gearBoard.service.GearService;
 import com.example.lollandback.member.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -16,46 +17,43 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/gearboard")
 public class GearController {
-
-
     private final GearService service;
-// free
+
+    // free
     @GetMapping("best")
     public List<GearBoard> listss(){
         return service.listss();
     }
 
-//today
+    //today
     @GetMapping("today")
     public List<GearBoard> listto(){
         return service.listto();
     }
 
 
-@PostMapping("saves")
-public ResponseEntity saves(  GearBoard gearBoard,
-                              @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] files,
-                              @SessionAttribute(value = "login", required = false) Member login) throws IOException {
-/*
-  파일 넘어오는거 확인
-    if (files != null) {
-        for (int i = 0; i < files.length; i++) {
-            System.out.println("file = " + files[i].getOriginalFilename());
-            System.out.println("file.getSize() = " + files[i].getSize());
+    @PostMapping("saves")
+    public ResponseEntity saves(  GearBoard gearBoard,
+                                  @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] files,
+                                  @SessionAttribute(value = "login", required = false) Member login) throws IOException {
+    /*
+      파일 넘어오는거 확인
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                System.out.println("file = " + files[i].getOriginalFilename());
+                System.out.println("file.getSize() = " + files[i].getSize());
+            }
+        }
+    */
+        if (!service.validate(gearBoard)){
+            return  ResponseEntity.badRequest().build();
+        }
+        if (service.saves(gearBoard,files,login)){
+        return ResponseEntity.ok().build();
+        }else{
+            return  ResponseEntity.internalServerError().build();
         }
     }
-*/
-    if (!service.validate(gearBoard)){
-        return  ResponseEntity.badRequest().build();
-    }
-    if (service.saves(gearBoard,files,login)){
-    return ResponseEntity.ok().build();
-    }else{
-        return  ResponseEntity.internalServerError().build();
-    }
-}
-
-
 
     @GetMapping("list")
     public List<GearBoard> list(@RequestParam String category){
@@ -67,9 +65,8 @@ public ResponseEntity saves(  GearBoard gearBoard,
     return service.listAll(page);
     }
 
-
     @GetMapping("gear_id/{gear_id}")
-    public GearBoard getId(@PathVariable Integer gear_id){
+    public GearBoardDto getId(@PathVariable Integer gear_id){
         return service.getId(gear_id);
     }
 
@@ -89,8 +86,4 @@ public ResponseEntity saves(  GearBoard gearBoard,
         System.out.println("gearBoard = " + gearBoard);
         service.saveup(gearBoard,removeFilesIds,uploadFiles);
     }
-
-
-
-
 }

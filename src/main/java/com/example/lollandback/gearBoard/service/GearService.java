@@ -3,6 +3,7 @@ package com.example.lollandback.gearBoard.service;
 
 import com.example.lollandback.gearBoard.domain.GearBoard;
 import com.example.lollandback.gearBoard.domain.GearFile;
+import com.example.lollandback.gearBoard.dto.GearBoardDto;
 import com.example.lollandback.gearBoard.mapper.GearCommentMapper;
 import com.example.lollandback.gearBoard.mapper.GearFileMapper;
 import com.example.lollandback.gearBoard.mapper.GearMapper;
@@ -45,23 +46,19 @@ public class GearService {
         return mapper.list(category);
     }
 
+    public GearBoardDto getId(Integer gear_id) {
+        GearBoardDto board =  mapper.getId(gear_id);
 
-    public GearBoard getId(Integer gear_id) {
-              GearBoard board =  mapper.getId(gear_id);
-
-              List<GearFile> gearFiles =gearFileMapper.selectNameByGearboardId(gear_id);
-                for (GearFile gearFile : gearFiles){
-                    String url=urlPrefix+"lolland/gearboard/"+gear_id+"/"+gearFile.getName();
-                    gearFile.setUrl(url);
-                }
-            board.setFiles(gearFiles);
+        List<GearFile> gearFiles = gearFileMapper.selectNameByGearboardId(gear_id);
+        for (GearFile gearFile : gearFiles) {
+            String url=urlPrefix+"lolland/gearboard/"+gear_id+"/"+gearFile.getName();
+            gearFile.setUrl(url);
+        }
+        board.setFiles(gearFiles);
         return board;
     }
 
     public boolean  remove(Integer gear_id) {
-
-
-
         // 맴버가 작성한 댓글 삭제
         deleteFile(gear_id);
         // 첨부 파일 지우기
