@@ -1,5 +1,6 @@
 package com.example.lollandback.board.review.service;
 
+import com.example.lollandback.board.order.domain.OrderStatus;
 import com.example.lollandback.board.product.mapper.ProductMapper;
 import com.example.lollandback.board.review.domain.Review;
 import com.example.lollandback.board.review.dto.ReviewDto;
@@ -109,5 +110,19 @@ public class ReviewService {
 
         return rates.stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+    }
+
+    public boolean checkCanLeaveReview(Long memberId, Long productId) {
+        if(reviewMapper.haveReviewed(memberId, productId) != 0) {
+            return false;
+        } else {
+            List<OrderStatus> orderStatuses = reviewMapper.hasPurchased(memberId, productId);
+            for(OrderStatus status : orderStatuses) {
+                if(status == OrderStatus.ORDERED) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

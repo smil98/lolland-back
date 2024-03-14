@@ -1,5 +1,6 @@
 package com.example.lollandback.board.review.mapper;
 
+import com.example.lollandback.board.order.domain.OrderStatus;
 import com.example.lollandback.board.review.domain.Review;
 import com.example.lollandback.board.review.dto.MyReviewList;
 import com.example.lollandback.board.review.dto.ReviewDto;
@@ -154,4 +155,18 @@ public interface ReviewMapper {
     """)
     void deleteReviewByMember(Long memberId);
 
+    @Select("""
+        SELECT COUNT(review_id)
+        FROM review
+        WHERE member_id = #{memberId} AND product_id = #{productId}
+    """)
+    int haveReviewed(Long memberId, Long productId);
+
+    @Select("""
+        SELECT order_status
+        FROM productorder po
+        LEFT JOIN orderproductdetails od ON po.id = od.order_id
+        WHERE po.member_id = #{memberId} AND od.product_id = #{productId}
+    """)
+    List<OrderStatus> hasPurchased(Long memberId, Long productId);
 }

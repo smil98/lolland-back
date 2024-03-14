@@ -8,12 +8,14 @@ import java.util.List;
 public class GetReviewDto {
     private List<ReviewDto> reviewList;
     private Long totalReviews;
+    private boolean canLeaveReview;
 
     public GetReviewDto () {
     }
 
-    public GetReviewDto(List<ReviewDto> reviewList, Long totalReviews) {
+    public GetReviewDto(List<ReviewDto> reviewList, Long totalReviews, boolean canLeaveReview) {
         this.reviewList = reviewList;
         this.totalReviews = totalReviews;
+        this.canLeaveReview = canLeaveReview;
     }
 }

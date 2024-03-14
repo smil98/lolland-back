@@ -105,7 +105,8 @@ public interface QnaMapper {
         SELECT q.question_id, q.question_title, q.question_reg_time, p.product_name
         FROM question q 
         LEFT JOIN product p ON q.product_id = p.product_id
-        WHERE p.member_id = #{memberId}
+        LEFT JOIN answer a ON q.question_id = a.question_id
+        WHERE p.member_id = #{memberId} AND a.answer_id IS NULL
         ORDER BY q.question_reg_time DESC
         LIMIT #{from}, 10
     """)
@@ -116,7 +117,8 @@ public interface QnaMapper {
         SELECT COUNT(*)
         FROM question q
         LEFT JOIN product p ON q.product_id = p.product_id
-        WHERE p.member_id = #{memberId}
+        LEFT JOIN answer a ON q.question_id = a.question_id
+        WHERE p.member_id = #{memberId} AND answer_id IS NULL
     """)
     int countAllQuestions(Long memberId);
 

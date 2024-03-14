@@ -22,12 +22,18 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/fetch")
-    public GetReviewDto fetchReviews(@RequestParam Long product_id,
+    public GetReviewDto fetchReviews(@SessionAttribute(required = false, name = "login") Member login,
+                                     @RequestParam Long product_id,
                                      @RequestParam(defaultValue = "0") Integer page,
                                      @RequestParam(defaultValue = "10") Integer pageSize) {
-        Long totalReview = reviewService.countTotalReview(product_id);
-        List<ReviewDto> reviewList = reviewService.getAllReviewsByProduct(product_id, page, pageSize);
-        return new GetReviewDto(reviewList, totalReview);
+
+            Long totalReview = reviewService.countTotalReview(product_id);
+            boolean canLeaveReview = false;
+            if (login != null) {
+                canLeaveReview = reviewService.checkCanLeaveReview(login.getId(), product_id);
+            }
+            List<ReviewDto> reviewList = reviewService.getAllReviewsByProduct(product_id, page, pageSize);
+            return new GetReviewDto(reviewList, totalReview, canLeaveReview);
     }
 
 //    @GetMapping("/fetchAll")
