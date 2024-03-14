@@ -9,6 +9,7 @@ import com.example.lollandback.board.order.exception.CustomLogicException;
 import com.example.lollandback.board.order.exception.ExceptionCode;
 import com.example.lollandback.board.order.mapper.OrderMapper;
 import com.example.lollandback.board.product.dto.ProductAndOptionDto;
+import com.example.lollandback.board.review.mapper.ReviewMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,7 @@ import java.util.*;
 public class OrderService {
     private final OrderMapper orderMapper;
     private final CartMapper cartMapper;
+    private final ReviewMapper reviewMapper;
 
     @Value("${toss.pay.secretKey}")
     private String testSecretKey;
@@ -275,6 +277,19 @@ public class OrderService {
             Long quantity = dto.getQuantity().longValue();
             orderMapper.refillOptionStock(dto.getOption_id(), quantity);
             orderMapper.refillTotalStock(dto.getProduct_id(), dto.getQuantity());
+        }
+
+        //만약 리뷰를 달았다면 동일한 상품 구매 내역이 있는지 조회 후 없으면 리뷰 삭제
+        List<OrderStatus> orderStatuses = orderMapper.getOrderStatusByIdAndMember(order.getId(), order.getMember_id());
+        for(OrderStatus orderStatus : orderStatuses) {
+            if(orderStatus == OrderStatus.ORDERED) {
+                return response; //한 개라도 구매 완료가 있으면 삭제 조치 스킵
+            }
+        }
+        // 구매 이력이 없는 리뷰 삭제
+        Long reviewId = orderMapper.getNoPurchasedReview(order.getId(), order.getMember_id());
+        if(reviewId != null) {
+            reviewMapper.deleteReviewById(reviewId);
         }
 
         return response;

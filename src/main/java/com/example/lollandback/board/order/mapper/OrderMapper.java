@@ -2,6 +2,7 @@ package com.example.lollandback.board.order.mapper;
 
 import com.example.lollandback.board.order.domain.Order;
 import com.example.lollandback.board.order.domain.OrderProductDetails;
+import com.example.lollandback.board.order.domain.OrderStatus;
 import com.example.lollandback.board.order.dto.*;
 import com.example.lollandback.member.dto.MemberDto;
 import org.apache.ibatis.annotations.*;
@@ -258,4 +259,22 @@ public interface OrderMapper {
     """)
     int countCancelReqInfo();
 
+    @Select("""
+        SELECT order_status
+        FROM orderproductdetails od
+             JOIN productorder po ON od.order_id = po.id
+        WHERE po.member_id = #{memberId} 
+        AND od.product_id = (SELECT product_id FROM orderproductdetails WHERE orderproductdetails.order_id = #{id});
+    """)
+    List<OrderStatus> getOrderStatusByIdAndMember(Long id, Long memberId);
+
+    @Select("""
+        SELECT DISTINCT review_id
+        FROM orderproductdetails od
+            LEFT JOIN productorder po ON od.order_id = po.id
+            LEFT JOIN review r ON r.member_id = po.member_id
+        WHERE po.member_id = #{memberId} 
+        AND od.product_id = (SELECT product_id FROM orderproductdetails WHERE orderproductdetails.order_id = #{id});
+    """)
+    Long getNoPurchasedReview(Long id, Long memberId);
 }
