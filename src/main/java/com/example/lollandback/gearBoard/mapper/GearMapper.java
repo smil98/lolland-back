@@ -246,5 +246,12 @@ select count(*)
 from gearboard;
             """)
     int countAll();
+
+    @Update("""
+        UPDATE gearboard
+        SET gear_views = gear_views + 1
+        WHERE gear_id = #{gear_id}
+    """)
+    void updateView(Integer gear_id);
 }
 

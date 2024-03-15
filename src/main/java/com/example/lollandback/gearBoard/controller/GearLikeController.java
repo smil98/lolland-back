@@ -17,17 +17,14 @@ public class GearLikeController {
 
     private final GearLikeService gearLikeService;
 
-    @PostMapping // 응답에 정보를 MAP으로 넘길꺼다
-
+    @PostMapping
     public ResponseEntity like(@RequestBody GearLike gearLike,
-                               @SessionAttribute(value = "login",required = false)Member login){
-
-        System.out.println("gearLike = " + gearLike);
+                               @SessionAttribute(value = "login",required = false)Member login) {
         if (login==null){
             return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
          return  ResponseEntity.ok(gearLikeService.update(gearLike,login));
-       }
+   }
 
 
 

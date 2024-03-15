@@ -47,6 +47,7 @@ public class GearService {
     }
 
     public GearBoardDto getId(Integer gear_id) {
+        mapper.updateView(gear_id);
         GearBoardDto board =  mapper.getId(gear_id);
 
         List<GearFile> gearFiles = gearFileMapper.selectNameByGearboardId(gear_id);
